@@ -1,0 +1,1 @@
+# devextreme-data-grid-validate-non-changed-cells
