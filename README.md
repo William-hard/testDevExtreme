@@ -4,7 +4,7 @@
 <!-- default badges end -->
 # DataGrid for DevExtreme - How to Validate Unchanged Cells
 
-This example demonstrates how to validate unchanged cells in the DataGrid component on button click. To implement this functionality, define the `validateVisibleRows` function:
+This example demonstrates how to validate unchanged cells in the DataGrid component with a button click. To implement this functionality, define the `validateVisibleRows` function:
 
 1. Specify rows that need validation. To validate all rows, obtain [visible rows](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDataGrid/Methods/#getVisibleRows) and create an array of corresponding change objects. Assign the array to the [changes](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDataGrid/Configuration/editing/changes/) property.
 
@@ -14,7 +14,7 @@ This example demonstrates how to validate unchanged cells in the DataGrid compon
 
 ![DataGrid with validated unchanged cells](/data-grid-validate-unchanged-cells.png)
 
-If you want to validate unchanged cells after DataGrid is loaded, you can call the `validateVisibleRows` function in the [onContentReady](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDataGrid/Configuration/#onContentReady) event handler.
+If you want to validate unchanged cells after DataGrid is loaded, call the `validateVisibleRows` function in the [onContentReady](https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxDataGrid/Configuration/#onContentReady) event handler.
 
 ## Files to Review
 
