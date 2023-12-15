@@ -44,7 +44,7 @@ function App(): JSX.Element {
 
   const onChangesChange = useCallback((changes: DataChange[]): void => {
     setChanges(changes);
-  }, [validateVisibleRows]);
+  }, []);
 
   return (
     <div className="demo-container">
