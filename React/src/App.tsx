@@ -3,9 +3,8 @@ import Button from 'devextreme-react/button';
 import './App.css';
 import 'devextreme/dist/css/dx.material.blue.light.compact.css';
 import type { DataChange } from 'devextreme/common/grids';
-import dxDataGrid, { Row } from 'devextreme/ui/data_grid';
 import DataGrid, {
-  Column, Editing, PatternRule, RequiredRule, StringLengthRule, Toolbar, Item,
+  DataGridTypes, Column, Editing, PatternRule, RequiredRule, StringLengthRule, Toolbar, Item,
 } from 'devextreme-react/data-grid';
 import notify from 'devextreme/ui/notify';
 import { customers } from './data';
@@ -15,22 +14,21 @@ const pattern = /^\(\d{3}\) \d{3}-\d{4}$/i;
 function App(): JSX.Element {
   let grid = React.useRef<DataGrid>(null);
   const [clicked, setClicked] = useState<Boolean>(false);
-  const [changes, setChanges] = useState<DataChange[]>([]);
+  const [changes, setChanges] = useState<DataGridTypes.DataChange[]>([]);
 
   const validateVisibleRows = React.useCallback(() => {
-    let dataGrid: dxDataGrid | undefined = grid?.current?.instance;
-    const fakeChanges: DataChange[] = dataGrid
-      ? dataGrid.getVisibleRows().map((row: Row) => ({ type: 'update', key: row.key, data: {} }))
+    let dataGrid = grid?.current?.instance;
+    const fakeChanges = dataGrid
+      ? dataGrid.getVisibleRows().map((row: DataGridTypes.Row): DataGridTypes.DataChange => ({ type: 'update', key: row.key, data: {} }))
       : [];
     // alternatively, you can use the DataGrid|option method to set a new changes array
-    let array: DataChange[] | [] | undefined = [...changes, ...fakeChanges];
-    setChanges(array);
+    setChanges([...changes, ...fakeChanges]);
     setClicked(true);
   }, [changes]);
 
   useEffect(() => {
     if (changes.length && clicked) {
-      let dataGrid: dxDataGrid | undefined = grid?.current?.instance;
+      let dataGrid = grid?.current?.instance;
       dataGrid?.repaint();
       // @ts-expect-error - getController is a private method
       dataGrid?.getController('validating').validate(true).then((result: Boolean) => {
