@@ -1,8 +1,5 @@
 import { Component, ViewChild, AfterViewChecked } from '@angular/core';
-import { ClickEvent } from 'devextreme/ui/button';
-import { DxDataGridComponent } from 'devextreme-angular/ui/data-grid';
-import type { DataChange } from 'devextreme/common/grids';
-import dxDataGrid, { Row } from 'devextreme/ui/data_grid';
+import { DxDataGridComponent, DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import notify from 'devextreme/ui/notify';
 import { Customer, Service } from './app.service';
 
@@ -17,7 +14,7 @@ export class AppComponent implements AfterViewChecked {
 
   checked: Boolean = false;
 
-  changes: DataChange[] = [];
+  changes: DxDataGridTypes.DataChange[] = [];
 
   pattern = /^\(\d{3}\) \d{3}-\d{4}$/i;
 
@@ -29,9 +26,9 @@ export class AppComponent implements AfterViewChecked {
   }
 
   validateVisibleRows(): void {
-    const dataGridInstance: dxDataGrid | undefined = this?.dataGrid?.instance;
-    const fakeChanges: DataChange[] | undefined = dataGridInstance
-      ? dataGridInstance.getVisibleRows().map((row: Row) => ({ type: 'update', key: row.key, data: {} }))
+    const dataGridInstance = this?.dataGrid?.instance;
+    const fakeChanges = dataGridInstance
+      ? dataGridInstance.getVisibleRows().map((row: DxDataGridTypes.Row): DxDataGridTypes.DataChange => ({ type: 'update', key: row.key, data: {} }))
       : [];
     this.changes = [...this.changes, ...fakeChanges];
     this.checked = true;
@@ -40,8 +37,9 @@ export class AppComponent implements AfterViewChecked {
   ngAfterViewChecked(): void {
     if (this.changes.length && this.checked) {
       this.checked = false;
-      const dataGridInstance: any = this?.dataGrid?.instance;
+      const dataGridInstance = this?.dataGrid?.instance;
       dataGridInstance?.repaint();
+      // @ts-expect-error - getController is a private method
       dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
         const message = result ? 'Validation is passed' : 'Validation is failed';
         const type = result ? 'success' : 'error';
