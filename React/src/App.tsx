@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Button from 'devextreme-react/button';
 import './App.css';
 import 'devextreme/dist/css/dx.material.blue.light.compact.css';
-import type { DataChange } from 'devextreme/common/grids';
 import DataGrid, {
   DataGridTypes, Column, Editing, PatternRule, RequiredRule, StringLengthRule, Toolbar, Item,
 } from 'devextreme-react/data-grid';
@@ -40,7 +39,7 @@ function App(): JSX.Element {
     }
   }, [validateVisibleRows]);
 
-  const onChangesChange = useCallback((changes: DataChange[]): void => {
+  const onChangesChange = useCallback((changes: DataGridTypes.DataChange[]): void => {
     setChanges(changes);
   }, []);
 
