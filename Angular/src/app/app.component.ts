@@ -12,7 +12,7 @@ import { Customer, Service } from './app.service';
 export class AppComponent implements AfterViewChecked {
   @ViewChild(DxDataGridComponent, { static: false }) dataGrid: DxDataGridComponent | undefined;
 
-  checked: Boolean = false;
+  checked = false;
 
   changes: DxDataGridTypes.DataChange[] = [];
 

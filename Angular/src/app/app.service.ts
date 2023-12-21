@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 
-export class Customer {
-  ID: number | undefined;
+export interface Customer {
+  ID: number;
 
-  CompanyName: string | undefined;
+  CompanyName: string;
 
-  Address: string | undefined;
+  Address: string;
 
-  City: string | undefined;
+  City: string;
 
-  State: string | undefined;
+  State: string;
 
-  Zipcode: number | undefined;
+  Zipcode: number;
 
-  Phone: string | undefined;
+  Phone: string;
 
-  Fax: string | undefined;
+  Fax: string;
 
-  Website: string | undefined;
+  Website: string;
 }
 
 const customers: Customer[] = [{
