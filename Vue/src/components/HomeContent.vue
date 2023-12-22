@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="demo-container">
     <DxDataGrid
       ref="dataGridRef"
       :data-source="customers"
@@ -43,7 +43,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import { customers } from '@/data';
 import 'devextreme/dist/css/dx.material.blue.light.compact.css';
 import DxButton from 'devextreme-vue/button';
@@ -58,12 +58,12 @@ import DxDataGrid, {
   DxDataGridTypes
 } from 'devextreme-vue/data-grid';
 import type dxDataGrid from 'devextreme/ui/data_grid';
+import notify from 'devextreme/ui/notify';
 
 const pattern = /^\(\d{3}\) \d{3}-\d{4}$/i;
 const changes = ref<DxDataGridTypes.DataChange[]>([]);
 const clicked = ref(false);
 const dataGridRef = ref<DxDataGrid>();
-const obj = reactive({ changes });
 
 const validateVisibleRows = () => {
   const dataGridInstance = dataGridRef.value?.instance! as dxDataGrid;
@@ -76,22 +76,31 @@ const validateVisibleRows = () => {
         data: {}
       }))
     : [];
-  obj.changes = [...changes.value, ...fakeChanges];
+  changes.value = [...changes.value, ...fakeChanges];
   clicked.value = true;
 };
 
 watch(changes, () => {
-  requestAnimationFrame(() => {
-    const dataGridInstance = dataGridRef.value?.instance! as dxDataGrid;
-    dataGridInstance?.repaint();
-    dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
-      const message = result ? 'Validation is passed' : 'Validation is failed';
-      const type = result ? 'success' : 'error';
-      console.log(type);
+  if(clicked.value) {
+    nextTick (() => {
+      const dataGridInstance = dataGridRef.value?.instance! as dxDataGrid;
+      dataGridInstance?.repaint();
+      dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
+        const message = result ? 'Validation is passed' : 'Validation is failed';
+        const type = result ? 'success' : 'error';
+        notify({
+          message,
+          type,
+          position: {
+            offset: '0 50',
+            at: 'bottom',
+            of: '.demo-container',
+          },
+        });
+      });
+      clicked.value = false;
     });
-    clicked.value = false;
-  });
-
+  }
 }, {});
 
 </script>
