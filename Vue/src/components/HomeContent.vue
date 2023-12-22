@@ -55,9 +55,9 @@ import DxDataGrid, {
   DxStringLengthRule,
   DxToolbar,
   DxItem,
-  DxDataGridTypes
 } from 'devextreme-vue/data-grid';
 import type dxDataGrid from 'devextreme/ui/data_grid';
+import { type DxDataGridTypes } from 'devextreme-vue/data-grid';
 import notify from 'devextreme/ui/notify';
 
 const pattern = /^\(\d{3}\) \d{3}-\d{4}$/i;
@@ -85,6 +85,7 @@ watch(changes, () => {
     nextTick (() => {
       const dataGridInstance = dataGridRef.value?.instance! as dxDataGrid;
       dataGridInstance?.repaint();
+      // @ts-expect-error - getController is a private method
       dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
         const message = result ? 'Validation is passed' : 'Validation is failed';
         const type = result ? 'success' : 'error';
