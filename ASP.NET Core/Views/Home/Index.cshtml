@@ -2,28 +2,67 @@
 
 <h2>Home</h2>
 
-@(Html.DevExtreme().DataGrid<SampleOrder>()
-    .ShowBorders(true)
-    .DataSource(d => d.Mvc().Controller("SampleData").LoadAction("Get").Key("OrderID"))
-    .Columns(columns => {
-        columns.AddFor(m => m.OrderID);
-        columns.AddFor(m => m.OrderDate);
-        columns.AddFor(m => m.CustomerName);
-        columns.AddFor(m => m.ShipCountry);
-        columns.AddFor(m => m.ShipCity);
+@(Html.DevExtreme().DataGrid<Customer>()
+    .ID("gridContainer")
+    .DataSource(d => d.Mvc()
+    .Controller("SampleData")
+    .LoadAction("Get")
+    .UpdateAction("Put")
+    .Key("ID"))
+    .Editing(e =>
+    {
+        e.AllowUpdating(true);
+        e.Mode(GridEditMode.Batch);
     })
-    .Paging(p => p.PageSize(10))
-    .FilterRow(f => f.Visible(true))
-    .HeaderFilter(f => f.Visible(true))
-    .GroupPanel(p => p.Visible(true))
-    .Grouping(g => g.AutoExpandAll(false))
-    .RemoteOperations(true)
-    .Summary(s => s
-        .TotalItems(totalItems => {
-            totalItems.AddFor(m => m.ShipCity).SummaryType(SummaryType.Count);
-        })
-        .GroupItems(groupItems => {
-            groupItems.Add().SummaryType(SummaryType.Count);
-        })
-    )
+    .Columns(columns =>
+    {
+        columns.AddFor(m => m.CompanyName);
+        columns.AddFor(m => m.City);
+        columns.AddFor(m => m.Phone);
+        columns.AddFor(m => m.Fax);
+        columns.AddFor(m => m.State);
+    })
+    .Toolbar(toolbar =>
+    {
+        toolbar.Items(items =>
+        {
+        items.Add()
+         .Name("validate")
+         .Widget(w =>
+           w.Button()
+             .Text("Validate DataGrid")
+             .StylingMode(ButtonStylingMode.Outlined)
+             .OnClick("validateVisibleRows"));
+         items.Add().Name("saveButton");
+         items.Add().Name("revertButton");
+        });
+    })
+    .ShowBorders(true)
 )
+
+<script>
+    function validateVisibleRows() {
+        const grid = $("#gridContainer").dxDataGrid("instance");
+        const currentChanges = grid.option("editing.changes");
+        const fakeChanges = grid.getVisibleRows().map(function (row) {
+            return { type: "update", key: row.data.ID, data: {} };
+        });
+
+        grid.option("editing.changes", [...currentChanges, ...fakeChanges]);
+        grid.repaint();
+
+        grid.getController("validating").validate(true).then(function (result) {
+            const message = result ? "Validation is passed" : "Validation is failed";
+            const type = result ? "success" : "error";
+            DevExpress.ui.notify({
+                message: message,
+                type: type,
+                position: {
+                    offset: "0 50",
+                    at: "bottom",
+                    of: ".demo-container",
+                },
+            });
+        });
+    }
+</script>
