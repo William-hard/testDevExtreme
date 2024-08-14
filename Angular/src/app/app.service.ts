@@ -1,50 +1,30 @@
 import { Injectable } from '@angular/core';
 
-export interface Customer {
-  ID: number;
+export interface ExecutionItem {
+  Id: number;
 
-  CompanyName: string;
+  Movement?: number;
 
-  Address: string;
+  Lot?: string;
 
-  City: string;
-
-  State: string;
-
-  Zipcode: number;
-
-  Phone: string;
-
-  Fax: string;
-
-  Website: string;
+  IsBatch: boolean;
 }
 
-const customers: Customer[] = [{
-  ID: 1,
-  CompanyName: '',
-  Address: '702 SW 8th Street',
-  City: 'Bentonville',
-  State: 'Arkansas',
-  Zipcode: 72716,
-  Phone: '123456',
-  Fax: '(800) 555-2171',
-  Website: 'http://www.nowebsitesupermart.com',
+const customers: ExecutionItem[] = [{
+  Id: 1,
+  Movement: undefined,
+  Lot: undefined,
+  IsBatch: true,
 }, {
-  ID: 2,
-  CompanyName: 'Electronics Depot',
-  Address: '2455 Paces Ferry Road NW',
-  City: 'NYC',
-  State: 'Georgia',
-  Zipcode: 30339,
-  Phone: '(800) 595-3232',
-  Fax: '(800) 595-3231',
-  Website: 'http://www.nowebsitedepot.com',
+  Id: 1,
+  Movement: undefined,
+  Lot: undefined,
+  IsBatch: false,
 }];
 
 @Injectable()
 export class Service {
-  getCustomers(): Customer[] {
+  getCustomers(): ExecutionItem[] {
     return customers;
   }
 }

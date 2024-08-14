@@ -1,7 +1,9 @@
 import { Component, ViewChild, AfterViewChecked } from '@angular/core';
 import { DxDataGridComponent, DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
 import notify from 'devextreme/ui/notify';
-import { Customer, Service } from './app.service';
+import { ExecutionItem, Service } from './app.service';
+import DevExpress from "devextreme";
+import RowPreparedEvent = DevExpress.ui.dxDataGrid.RowPreparedEvent;
 
 @Component({
   selector: 'app-root',
@@ -16,19 +18,17 @@ export class AppComponent implements AfterViewChecked {
 
   changes: DxDataGridTypes.DataChange[] = [];
 
-  pattern = /^\(\d{3}\) \d{3}-\d{4}$/i;
-
-  customers: Customer[];
+  executionItems: ExecutionItem[];
 
   constructor(service: Service) {
-    this.customers = service.getCustomers();
+    this.executionItems = service.getCustomers();
     this.validateVisibleRows = this.validateVisibleRows.bind(this);
   }
 
   validateVisibleRows(): void {
     const dataGridInstance = this?.dataGrid?.instance;
     const fakeChanges = dataGridInstance
-      ? dataGridInstance.getVisibleRows().map((row: DxDataGridTypes.Row): DxDataGridTypes.DataChange => ({ type: 'update', key: row.key, data: {} }))
+      ? dataGridInstance.getSelectedRowsData().map((row: DxDataGridTypes.Row): DxDataGridTypes.DataChange => ({ type: 'update', key: row.key, data: {} }))
       : [];
     this.changes = [...this.changes, ...fakeChanges];
     this.checked = true;
@@ -53,6 +53,18 @@ export class AppComponent implements AfterViewChecked {
           },
         });
       });
+    }
+  }
+
+  validateLot(e: any): boolean {
+    return !!e.value;
+  }
+
+  onValueMovementChange(datas: any, e: any): void {
+    datas.data.movements = e.value;
+    if (datas.data.movements > 0 && datas.data.IsBatch) {
+      datas.row.isSelected = true;
+      this.validateVisibleRows();
     }
   }
 }

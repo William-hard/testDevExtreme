@@ -1,30 +1,45 @@
 <div class="demo-container">
+
   <dx-data-grid
-    [dataSource]="customers"
-    keyExpr="ID"
+    [dataSource]="executionItems"
+    keyExpr="Id"
     [repaintChangesOnly]="true"
-    [showBorders]="true"
-  >
+    [showBorders]="true">
+
     <dxo-editing
       [(changes)]="changes"
       mode="batch"
-      [allowUpdating]="true"
-    ></dxo-editing>
-    <dxi-column dataField="CompanyName">
-      <dxi-validation-rule type="required"></dxi-validation-rule>
-    </dxi-column>
-    <dxi-column dataField="City">
-      <dxi-validation-rule type="stringLength" [min]="4"></dxi-validation-rule>
-    </dxi-column>
-    <dxi-column dataField="Phone">
+      [allowUpdating]="true"></dxo-editing>
+
+
+
+    <dxi-column
+      id="movements"
+      dataField="movements"
+      caption="Distribué"
+      dataType="number"
+      alignment="center"
+      cellTemplate="movementsTemplate"
+      [allowEditing]="true"
+    ></dxi-column>
+
+    <div *dxTemplate="let data of 'movementsTemplate'">
+      <dx-text-box
+        [disabled]="data.data.disabled"
+        (onValueChanged)="onValueMovementChange(data, $event)"
+        [(value)]="data.value">
+      </dx-text-box>
+    </div>
+
+    <dxi-column dataField="Lot">
       <dxi-validation-rule
-        type="pattern"
-        message="Your phone must have '(555) 555-5555 format!'"
-        [pattern]="pattern"
-      ></dxi-validation-rule>
+        message="lot requis pour ce produit"
+        [validationCallback]="validateLot"
+        type="custom">
+      </dxi-validation-rule>
     </dxi-column>
-    <dxi-column dataField="Fax"></dxi-column>
-    <dxi-column dataField="State"></dxi-column>
+
+
     <dxo-toolbar>
       <dxi-item>
         <div *dxTemplate>
@@ -35,8 +50,8 @@
           ></dx-button>
         </div>
       </dxi-item>
-      <dxi-item name="saveButton"></dxi-item>
-      <dxi-item name="revertButton"></dxi-item>
     </dxo-toolbar>
   </dx-data-grid>
+
+
 </div>
