@@ -4,7 +4,8 @@
     [dataSource]="executionItems"
     keyExpr="Id"
     [repaintChangesOnly]="true"
-    [showBorders]="true">
+    [showBorders]="true"
+    (onSelectionChanged)="onSelectionChanged($event)">
 
     <dxo-editing
       [(changes)]="changes"
@@ -12,8 +13,14 @@
       [allowUpdating]="true"></dxo-editing>
 
     <dxi-column
+      dataField="IsBatch"
+      caption="IsBatch"
+      alignment="center"
+      ></dxi-column>
+
+    <dxi-column
       id="movements"
-      dataField="movements"
+      dataField="Movement"
       caption="Distribué"
       dataType="number"
       alignment="center"
@@ -23,19 +30,40 @@
 
     <div *dxTemplate="let data of 'movementsTemplate'">
       <dx-text-box
-        [disabled]="data.data.disabled"
+        [disabled]="data.data.Disabled"
         (onValueChanged)="onValueMovementChange(data, $event)"
         [(value)]="data.value">
       </dx-text-box>
     </div>
 
-    <dxi-column dataField="Lot">
+    <dxi-column
+      dataField="Lot"
+      [showEditorAlways]="true"
+      editCellTemplate="lotSelectionTemplate">
+
       <dxi-validation-rule
         message="lot requis pour ce produit"
         [validationCallback]="validateLot"
         type="custom">
       </dxi-validation-rule>
+
     </dxi-column>
+
+
+    <div *dxTemplate="let data of 'lotSelectionTemplate'; let index">
+      <dx-select-box
+        [dataSource]="dataSource"
+        displayExpr="LotNumber"
+        valueExpr="LotNumber"
+        [acceptCustomValue]="true"
+        [(value)]="data.value"
+        (onValueChanged)="setLotItem(data, $event)"
+        (onCustomItemCreating)="onCustomItemCreating($event)"
+        placeholder="ajouter où sélectionner un lot"
+        [disabled]="data.data.Disabled"
+      >
+      </dx-select-box>
+    </div>
 
 
     <dxo-toolbar>

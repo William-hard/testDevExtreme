@@ -1,9 +1,12 @@
 import { Component, ViewChild, AfterViewChecked } from '@angular/core';
-import { DxDataGridComponent, DxDataGridTypes } from 'devextreme-angular/ui/data-grid';
+import { DxDataGridComponent } from 'devextreme-angular/ui/data-grid';
 import notify from 'devextreme/ui/notify';
-import { ExecutionItem, Service } from './app.service';
+import { Row, SelectionChangedEvent } from "devextreme/ui/data_grid";
+import { CustomItemCreatingEvent, ValueChangedEvent } from 'devextreme/ui/select_box';
+import { ExecutionItem, Lot, Service } from './app.service';
+import DataSource from 'devextreme/data/data_source';
 import DevExpress from "devextreme";
-import RowPreparedEvent = DevExpress.ui.dxDataGrid.RowPreparedEvent;
+import DataChange = DevExpress.common.grids.DataChange;
 
 @Component({
   selector: 'app-root',
@@ -16,19 +19,30 @@ export class AppComponent implements AfterViewChecked {
 
   checked = false;
 
-  changes: DxDataGridTypes.DataChange[] = [];
+  changes: DataChange[] = [];
 
   executionItems: ExecutionItem[];
 
+  selectedItemKeys: any[] = [];
+
+  dataSource: DataSource;
+
   constructor(service: Service) {
     this.executionItems = service.getCustomers();
+    this.dataSource = new DataSource({
+      store: {
+        data: this.executionItems,
+        type: 'array',
+        key: 'Id',
+      }
+    });
     this.validateVisibleRows = this.validateVisibleRows.bind(this);
   }
 
   validateVisibleRows(): void {
     const dataGridInstance = this?.dataGrid?.instance;
     const fakeChanges = dataGridInstance
-      ? dataGridInstance.getSelectedRowsData().map((row: DxDataGridTypes.Row): DxDataGridTypes.DataChange => ({ type: 'update', key: row.key, data: {} }))
+      ? dataGridInstance.getSelectedRowsData().map((row: Row): DataChange => ({ type: 'update', key: row.key, data: {} }))
       : [];
     this.changes = [...this.changes, ...fakeChanges];
     this.checked = true;
@@ -38,7 +52,7 @@ export class AppComponent implements AfterViewChecked {
     if (this.changes.length && this.checked) {
       this.checked = false;
       const dataGridInstance = this?.dataGrid?.instance;
-      dataGridInstance?.repaint();
+      dataGridInstance?.repaintRows([0]);
       // @ts-expect-error - getController is a private method
       dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
         const message = result ? 'Validation is passed' : 'Validation is failed';
@@ -57,7 +71,8 @@ export class AppComponent implements AfterViewChecked {
   }
 
   validateLot(e: any): boolean {
-    return !!e.value;
+    const isRequiredLot = !!e.data.IsBatch;
+    return !isRequiredLot;
   }
 
   onValueMovementChange(datas: any, e: any): void {
@@ -66,5 +81,25 @@ export class AppComponent implements AfterViewChecked {
       datas.row.isSelected = true;
       this.validateVisibleRows();
     }
+  }
+
+  onSelectionChanged({ selectedRowKeys }: SelectionChangedEvent): void {
+    this.selectedItemKeys = selectedRowKeys;
+  }
+
+  setLotItem(mydatas: any, e: ValueChangedEvent): void {
+    mydatas.data.Lot = e.value;
+  }
+
+  onCustomItemCreating(data: CustomItemCreatingEvent): void {
+    if (!data.text) {
+      data.customItem = null;
+      // return;
+    }
+
+    const newLot = {
+      Id: 7,
+      LotNumber: 'New Lot',
+    };
   }
 }
