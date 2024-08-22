@@ -58,7 +58,7 @@
         displayExpr="LotNumber"
         valueExpr="LotNumber"
         [acceptCustomValue]="true"
-        [(value)]="data.value"
+        [value]="data.value"
         (onValueChanged)="setLotItem(data, $event)"
         (onCustomItemCreating)="addCustomItem($event, data.data)"
         placeholder="ajouter où sélectionner un lot">

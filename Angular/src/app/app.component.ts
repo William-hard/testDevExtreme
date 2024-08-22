@@ -25,6 +25,8 @@ export class AppComponent implements AfterViewChecked {
 
   selectedItemKeys: any[] = [];
 
+  mapLotSelectionRowId: Map<number, DataSource> = new Map<number, DataSource>();
+
   dataSource: DataSource;
 
   constructor(service: Service) {
@@ -36,6 +38,21 @@ export class AppComponent implements AfterViewChecked {
         key: 'Id',
       },
     });
+
+    this.executionItems.forEach((ei, index) => {
+      if (ei.LotSelection && ei.LotSelection.length > 0) {
+        this.mapLotSelectionRowId.set(index, new DataSource({
+          store: {
+            data: ei.LotSelection,
+            type: 'array',
+            key: 'Id'
+          }
+        }));
+      }
+    });
+
+    console.log(this.mapLotSelectionRowId);
+
     this.validateVisibleRows = this.validateVisibleRows.bind(this);
   }
 
