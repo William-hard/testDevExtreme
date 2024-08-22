@@ -116,7 +116,6 @@ export class AppComponent implements AfterViewChecked {
       data.customItem = null;
       return;
     }
-
     const lotExist = item.LotSelection.some((lot) => lot.LotNumber === data.text);
 
     const newLotItem: Lot = {

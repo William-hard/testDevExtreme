@@ -42,11 +42,13 @@
       dataField="Lot"
       [showEditorAlways]="true"
       editCellTemplate="lotSelectionTemplate">
-      <dxi-validation-rule
-        message="lot requis pour ce produit"
-        [validationCallback]="validateLots"
-        type="custom">
-      </dxi-validation-rule>
+
+        <dxi-validation-rule
+          message="lot requis pour ce produit"
+          [validationCallback]="validateLots"
+          type="custom">
+        </dxi-validation-rule>
+
     </dxi-column>
 
 
