@@ -3,10 +3,10 @@ import { DxDataGridComponent } from 'devextreme-angular/ui/data-grid';
 import notify from 'devextreme/ui/notify';
 import { EditorPreparingEvent, Row, SelectionChangedEvent } from 'devextreme/ui/data_grid';
 import { CustomItemCreatingEvent, ValueChangedEvent } from 'devextreme/ui/select_box';
-import DataSource from 'devextreme/data/data_source';
 import DevExpress from 'devextreme';
 import { ExecutionItem, Lot, Service } from './app.service';
 import DataChange = DevExpress.common.grids.DataChange;
+import DataSource from "devextreme/data/data_source";
 
 @Component({
   selector: 'app-root',
@@ -41,7 +41,7 @@ export class AppComponent implements AfterViewChecked {
 
     this.executionItems.forEach((ei, index) => {
       if (ei.LotSelection && ei.LotSelection.length > 0) {
-        this.mapLotSelectionRowId.set(index, new DataSource({
+        this.mapLotSelectionRowId.set(ei.Id, new DataSource({
           store: {
             data: ei.LotSelection,
             type: 'array',
@@ -74,15 +74,6 @@ export class AppComponent implements AfterViewChecked {
       dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
         const message = result ? 'Validation is passed' : 'Validation is failed';
         const type = result ? 'success' : 'error';
-        notify({
-          message,
-          type,
-          position: {
-            offset: '0 50',
-            at: 'bottom',
-            of: '.demo-container',
-          },
-        });
       });
     }
   }
@@ -128,20 +119,53 @@ export class AppComponent implements AfterViewChecked {
     }
   }
 
-  addCustomItem(data: CustomItemCreatingEvent, item: ExecutionItem): void {
+  addCustomItem(data: CustomItemCreatingEvent, item: any): void {
+
     if (!data.text) {
       data.customItem = null;
       return;
     }
-    const lotExist = item.LotSelection.some((lot) => lot.LotNumber === data.text);
-
-    const newLotItem: Lot = {
-      Id: 25,
-      LotNumber: data.text,
-    };
+    const lotExist = item.data.LotSelection.some((lot: Lot) => lot.LotNumber === data.text);
 
     if (!lotExist) {
-      item.LotSelection.push(newLotItem);
+      const newLotItem: Lot = {
+        Id: this.getMaxKeyAndIncrement(),
+        LotNumber: data.text,
+      };
+
+      console.log(data);
+
+      const lotSelection = this.mapLotSelectionRowId.get(item.Id);
+
+      if (lotSelection) {
+        data.customItem = lotSelection.store().insert(newLotItem)
+          .then(() => lotSelection.load())
+          .then(() => newLotItem)
+          .catch((error) => {
+            console.log(error);
+            throw error;
+          });
+      }
     }
+  }
+
+  getMaxKeyAndIncrement(): number {
+    let maxKey = -1;
+    this.mapLotSelectionRowId.forEach((_, key) => {
+      if (key > maxKey) {
+        maxKey = key;
+      }
+    });
+    return maxKey + 1;
+  }
+
+  getLotsDataSource(datas: any): DataSource {
+    const x = this.mapLotSelectionRowId.get(datas.data.Id);
+
+    if (!x) {
+      throw '';
+    }
+
+    return x;
   }
 }

@@ -42,7 +42,6 @@
       dataField="Lot"
       [showEditorAlways]="true"
       editCellTemplate="lotSelectionTemplate">
-
         <dxi-validation-rule
           message="lot requis pour ce produit"
           [validationCallback]="validateLots"
@@ -54,13 +53,12 @@
 
     <div *dxTemplate="let data of 'lotSelectionTemplate'">
       <dx-select-box
-        [dataSource]="data.data.LotSelection"
+        [dataSource]="getLotsDataSource(data)"
         displayExpr="LotNumber"
         valueExpr="LotNumber"
         [acceptCustomValue]="true"
-        [value]="data.value"
-        (onValueChanged)="setLotItem(data, $event)"
-        (onCustomItemCreating)="addCustomItem($event, data.data)"
+        [value]="data.data.Lot"
+        (onCustomItemCreating)="addCustomItem($event, data)"
         placeholder="ajouter où sélectionner un lot">
       </dx-select-box>
     </div>
