@@ -1,11 +1,11 @@
 import { Component, ViewChild, AfterViewChecked } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular/ui/data-grid';
 import notify from 'devextreme/ui/notify';
-import { Row, SelectionChangedEvent } from "devextreme/ui/data_grid";
+import { EditorPreparingEvent, Row, SelectionChangedEvent } from 'devextreme/ui/data_grid';
 import { CustomItemCreatingEvent, ValueChangedEvent } from 'devextreme/ui/select_box';
-import { ExecutionItem, Lot, Service } from './app.service';
 import DataSource from 'devextreme/data/data_source';
-import DevExpress from "devextreme";
+import DevExpress from 'devextreme';
+import { ExecutionItem, Lot, Service } from './app.service';
 import DataChange = DevExpress.common.grids.DataChange;
 
 @Component({
@@ -34,7 +34,7 @@ export class AppComponent implements AfterViewChecked {
         data: this.executionItems,
         type: 'array',
         key: 'Id',
-      }
+      },
     });
     this.validateVisibleRows = this.validateVisibleRows.bind(this);
   }
@@ -53,7 +53,6 @@ export class AppComponent implements AfterViewChecked {
       this.checked = false;
       const dataGridInstance = this?.dataGrid?.instance;
       dataGridInstance?.repaintRows([0]);
-      // @ts-expect-error - getController is a private method
       dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
         const message = result ? 'Validation is passed' : 'Validation is failed';
         const type = result ? 'success' : 'error';
@@ -70,9 +69,15 @@ export class AppComponent implements AfterViewChecked {
     }
   }
 
-  validateLot(e: any): boolean {
-    const isRequiredLot = !!e.data.IsBatch;
-    return !isRequiredLot;
+  validateLots(e: any): boolean {
+    if (e.value) {
+      e.data.Lot = e.value;
+    }
+    if (!e.data.IsBatch) {
+      return true;
+    }
+    const validate: boolean = e.data.Lot !== '' && e.data.Movement > 0 && e.data.IsBatch;
+    return validate;
   }
 
   onValueMovementChange(datas: any, e: any): void {
@@ -91,15 +96,34 @@ export class AppComponent implements AfterViewChecked {
     mydatas.data.Lot = e.value;
   }
 
-  onCustomItemCreating(data: CustomItemCreatingEvent): void {
+  onEditorPreparing(e: EditorPreparingEvent<ExecutionItem>): void {
+    if (e.parentType === 'dataRow') {
+      if (e.dataField === 'Movement' && e.value > 0) {
+        e.editorOptions.readOnly = true;
+      }
+      if (e.dataField === 'Lot' && e.row !== undefined) {
+        if (e.row.data.Movement > 0) {
+          e.editorOptions.readOnly = true;
+        }
+      }
+    }
+  }
+
+  addCustomItem(data: CustomItemCreatingEvent, item: ExecutionItem): void {
     if (!data.text) {
       data.customItem = null;
-      // return;
+      return;
     }
 
-    const newLot = {
-      Id: 7,
-      LotNumber: 'New Lot',
+    const lotExist = item.LotSelection.some((lot) => lot.LotNumber === data.text);
+
+    const newLotItem: Lot = {
+      Id: 25,
+      LotNumber: data.text,
     };
+
+    if (!lotExist) {
+      item.LotSelection.push(newLotItem);
+    }
   }
 }
