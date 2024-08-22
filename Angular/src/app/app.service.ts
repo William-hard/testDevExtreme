@@ -5,7 +5,7 @@ export interface ExecutionItem {
 
   Movement?: number;
 
-  Lot?: string;
+  Lot: string;
 
   IsBatch: boolean;
 
@@ -23,7 +23,7 @@ const customers: ExecutionItem[] = [
   {
     Id: 1,
     Movement: undefined,
-    Lot: undefined,
+    Lot: '',
     IsBatch: true,
     LotSelection: [{ Id: 1, LotNumber: 'test' }],
     Disabled: false,
@@ -32,8 +32,8 @@ const customers: ExecutionItem[] = [
     Id: 2,
     IsBatch: false,
     Movement: undefined,
-    Lot: undefined,
-    LotSelection: [{ Id: 1, LotNumber: 'test' }, { Id: 2, LotNumber: 'tst2' }],
+    Lot: '',
+    LotSelection: [{ Id: 1, LotNumber: 'lot 1' }, { Id: 2, LotNumber: 'lot 2' }],
     Disabled: false,
   },
   {
@@ -41,7 +41,7 @@ const customers: ExecutionItem[] = [
     IsBatch: true,
     Movement: 3,
     Lot: 'lotSet',
-    LotSelection: [{ Id: 1, LotNumber: 'test' }, { Id: 2, LotNumber: 'tst2' }],
+    LotSelection: [{ Id: 1, LotNumber: 'lot 1' }, { Id: 2, LotNumber: 'lot 2' }],
     Disabled: true,
   }];
 
