@@ -6,7 +6,7 @@ import { CustomItemCreatingEvent, ValueChangedEvent } from 'devextreme/ui/select
 import DevExpress from 'devextreme';
 import { ExecutionItem, Lot, Service } from './app.service';
 import DataChange = DevExpress.common.grids.DataChange;
-import DataSource from "devextreme/data/data_source";
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-root',
@@ -45,8 +45,8 @@ export class AppComponent implements AfterViewChecked {
           store: {
             data: ei.LotSelection,
             type: 'array',
-            key: 'Id'
-          }
+            key: 'Id',
+          },
         }));
       }
     });
@@ -111,7 +111,7 @@ export class AppComponent implements AfterViewChecked {
         e.editorOptions.readOnly = true;
       }
       if (e.dataField === 'Lot' && e.row !== undefined) {
-        // @ts-ignore
+        // @ts-expect-error
         if (e.row.data.Movement > 0) {
           e.editorOptions.readOnly = true;
         }
@@ -120,43 +120,33 @@ export class AppComponent implements AfterViewChecked {
   }
 
   addCustomItem(data: CustomItemCreatingEvent, item: any): void {
-
     if (!data.text) {
       data.customItem = null;
       return;
     }
     const lotExist = item.data.LotSelection.some((lot: Lot) => lot.LotNumber === data.text);
 
+    const ids: number[] = item.data.LotSelection.map((lot: Lot) => lot.Id);
+    const maxId: number = Math.max(...ids);
+    const newId: number = maxId + 1;
+
     if (!lotExist) {
       const newLotItem: Lot = {
-        Id: this.getMaxKeyAndIncrement(),
+        Id: newId,
         LotNumber: data.text,
       };
 
-      console.log(data);
-
-      const lotSelection = this.mapLotSelectionRowId.get(item.Id);
+      const lotSelection = this.mapLotSelectionRowId.get(item.key);
 
       if (lotSelection) {
         data.customItem = lotSelection.store().insert(newLotItem)
           .then(() => lotSelection.load())
           .then(() => newLotItem)
           .catch((error) => {
-            console.log(error);
             throw error;
           });
       }
     }
-  }
-
-  getMaxKeyAndIncrement(): number {
-    let maxKey = -1;
-    this.mapLotSelectionRowId.forEach((_, key) => {
-      if (key > maxKey) {
-        maxKey = key;
-      }
-    });
-    return maxKey + 1;
   }
 
   getLotsDataSource(datas: any): DataSource {

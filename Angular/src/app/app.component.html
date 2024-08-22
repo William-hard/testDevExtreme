@@ -47,7 +47,6 @@
           [validationCallback]="validateLots"
           type="custom">
         </dxi-validation-rule>
-
     </dxi-column>
 
 
@@ -57,7 +56,7 @@
         displayExpr="LotNumber"
         valueExpr="LotNumber"
         [acceptCustomValue]="true"
-        [value]="data.data.Lot"
+        [(value)]="data.data.Lot"
         (onCustomItemCreating)="addCustomItem($event, data)"
         placeholder="ajouter où sélectionner un lot">
       </dx-select-box>
