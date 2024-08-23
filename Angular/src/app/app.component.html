@@ -3,7 +3,7 @@
   <dx-data-grid [dataSource]="executionItems" keyExpr="Id" [repaintChangesOnly]="true" [showBorders]="true"
     (onSelectionChanged)="onSelectionChanged($event)" (onEditorPreparing)="onEditorPreparing($event)">
 
-    <dxo-editing [(changes)]="changes" mode="cell" [allowUpdating]="true" [allowAdding]="true">
+    <dxo-editing [(changes)]="changes" mode="cell" [allowUpdating]="true">
     </dxo-editing>
 
 
@@ -27,7 +27,7 @@
         placeholder="ajouter où sélectionner un lot">
       </dx-select-box>
     </div>
-    
+
   </dx-data-grid>
 
 
