@@ -6,10 +6,6 @@
     <dxo-editing [(changes)]="changes" mode="cell" [allowUpdating]="true" [allowAdding]="true">
     </dxo-editing>
 
-    <dxi-column dataField="IsBatch" caption="IsBatch" alignment="center">
-      <dxi-validation-rule message="batch is required" [reevaluate]="true" [validationCallback]="validateBatch" type="custom">
-      </dxi-validation-rule>
-    </dxi-column>
 
     <dxi-column id="movements" dataField="Movement" caption="Distribué" dataType="number" alignment="center"
       [showEditorAlways]="true"  editCellTemplate="movementsTemplate" [allowEditing]="true"></dxi-column>
@@ -31,15 +27,7 @@
         placeholder="ajouter où sélectionner un lot">
       </dx-select-box>
     </div>
-
-
-    <dxo-toolbar>
-      <dxi-item>
-        <div *dxTemplate>
-          <dx-button text="Validate DataGrid" stylingMode="outlined" (onClick)="validateVisibleRows()"></dx-button>
-        </div>
-      </dxi-item>
-    </dxo-toolbar>
+    
   </dx-data-grid>
 
 
