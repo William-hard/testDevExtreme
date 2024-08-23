@@ -7,6 +7,7 @@ import DevExpress from 'devextreme';
 import { ExecutionItem, Lot, Service } from './app.service';
 import DataChange = DevExpress.common.grids.DataChange;
 import DataSource from 'devextreme/data/data_source';
+import { ValidationCallbackData } from 'devextreme/common';
 
 @Component({
   selector: 'app-root',
@@ -118,7 +119,11 @@ export class AppComponent implements AfterViewChecked {
       }
     }
   }
-
+  validateBatch(e: ValidationCallbackData){
+    if(e.data.Movement > 0 && e.data.Lot > 0) 
+       return true;
+    else return false
+  }
   addCustomItem(data: CustomItemCreatingEvent, item: any): void {
     if (!data.text) {
       data.customItem = null;
