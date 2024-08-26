@@ -1,7 +1,7 @@
 <div class="demo-container">
 
   <dx-data-grid [dataSource]="executionItems" keyExpr="Id" [repaintChangesOnly]="true" [showBorders]="true"
-     (onEditorPreparing)="onEditorPreparing($event)">
+     (onCellPrepared)="onEditorPreparing($event)">
 
     <dxo-editing [(changes)]="changes" mode="cell" [allowUpdating]="true">
     </dxo-editing>

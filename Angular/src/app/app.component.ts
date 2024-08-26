@@ -24,8 +24,6 @@ export class AppComponent implements AfterViewChecked {
 
   executionItems: ExecutionItem[];
 
-  selectedItemKeys: any[] = [];
-
   mapLotSelectionRowId: Map<number, DataSource> = new Map<number, DataSource>();
 
   dataSource: DataSource;
@@ -86,13 +84,6 @@ export class AppComponent implements AfterViewChecked {
     return validate;
   }
 
-  onValueMovementChange(datas: any, e: any): void {
-    datas.data.movements = e.value;
-    if (datas.data.movements > 0 && datas.data.IsBatch) {
-      this.validateVisibleRows();
-    }
-  }
-
   onEditorPreparing(e: EditorPreparingEvent<ExecutionItem>): void {
     if (e.parentType === 'dataRow') {
       if (e.dataField === 'Movement' && e.value > 0) {
@@ -105,11 +96,6 @@ export class AppComponent implements AfterViewChecked {
         }
       }
     }
-  }
-
-  validateBatch(e: ValidationCallbackData): boolean {
-    if (e.data.Movement > 0 && e.data.Lot > 0) { return true; }
-    return false;
   }
 
   addCustomItem(data: CustomItemCreatingEvent, item: any): void {
@@ -154,11 +140,5 @@ export class AppComponent implements AfterViewChecked {
     }
 
     return dataSource;
-  }
-
-
-
-  onLotChange(data: any, e: any): void {
-    // data.setValue(e.value);
   }
 }
