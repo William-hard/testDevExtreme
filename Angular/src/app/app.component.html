@@ -1,30 +1,49 @@
 <div class="demo-container">
 
   <dx-data-grid [dataSource]="executionItems" keyExpr="Id" [repaintChangesOnly]="true" [showBorders]="true"
-    (onSelectionChanged)="onSelectionChanged($event)" (onEditorPreparing)="onEditorPreparing($event)">
+     (onEditorPreparing)="onEditorPreparing($event)">
 
     <dxo-editing [(changes)]="changes" mode="cell" [allowUpdating]="true">
     </dxo-editing>
 
 
-    <dxi-column id="movements" dataField="Movement" caption="Distribué" dataType="number" alignment="center"
-      [showEditorAlways]="true"  editCellTemplate="movementsTemplate" [allowEditing]="true"></dxi-column>
+    <dxi-column
+      id="Movement"
+      dataField="Movement"
+      caption="Distribué"
+      dataType="number"
+      alignment="center"
+      [allowEditing]="true"
+      [showEditorAlways]="true"
+    ></dxi-column>
 
-    <div *dxTemplate="let data of 'movementsTemplate'">
-      <dx-text-box (onValueChanged)="onValueMovementChange(data, $event)" [(value)]="data.value">
-      </dx-text-box>
-    </div>
 
-    <dxi-column dataField="Lot" [showEditorAlways]="true" editCellTemplate="lotSelectionTemplate">
-      <dxi-validation-rule message="lot requis pour ce produit" [validationCallback]="validateLots" type="custom">
+    <dxi-column
+      dataField="Lot"
+      [showEditorAlways]="true"
+      editCellTemplate="lotSelectionTemplate">
+
+      <dxi-validation-rule
+        message="lot requis pour ce produit"
+        [validationCallback]="validateLots"
+        type="custom"
+        [reevaluate]="true">
       </dxi-validation-rule>
+
     </dxi-column>
 
 
     <div *dxTemplate="let data of 'lotSelectionTemplate'">
-      <dx-select-box [dataSource]="getLotsDataSource(data)" displayExpr="LotNumber" valueExpr="LotNumber"
-        [acceptCustomValue]="true" [(value)]="data.data.Lot" (onCustomItemCreating)="addCustomItem($event, data)"
+
+      <dx-select-box
+        [dataSource]="getLotsDataSource(data)"
+        displayExpr="LotNumber"
+        valueExpr="LotNumber"
+        [acceptCustomValue]="true"
+        [(value)]="data.data.Lot"
+        (onCustomItemCreating)="addCustomItem($event, data)"
         placeholder="ajouter où sélectionner un lot">
+
       </dx-select-box>
     </div>
 

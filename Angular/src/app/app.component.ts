@@ -41,15 +41,13 @@ export class AppComponent implements AfterViewChecked {
     });
 
     this.executionItems.forEach((ei, index) => {
-      if (ei.LotSelection && ei.LotSelection.length > 0) {
-        this.mapLotSelectionRowId.set(ei.Id, new DataSource({
-          store: {
-            data: ei.LotSelection,
-            type: 'array',
-            key: 'Id',
-          },
-        }));
-      }
+      this.mapLotSelectionRowId.set(ei.Id, new DataSource({
+        store: {
+          data: ei.LotSelection || [],
+          type: 'array',
+          key: 'Id',
+        },
+      }));
     });
 
     console.log(this.mapLotSelectionRowId);
@@ -84,6 +82,7 @@ export class AppComponent implements AfterViewChecked {
       return true;
     }
     const validate: boolean = e.data.Lot !== '' && e.data.Movement > 0 && e.data.IsBatch;
+    console.log('---->', validate);
     return validate;
   }
 
@@ -157,7 +156,9 @@ export class AppComponent implements AfterViewChecked {
     return dataSource;
   }
 
-  onSelectionChanged($event: any) {
 
+
+  onLotChange(data: any, e: any): void {
+    // data.setValue(e.value);
   }
 }

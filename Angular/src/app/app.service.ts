@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 export interface ExecutionItem {
   Id: number;
@@ -39,9 +39,9 @@ const customers: ExecutionItem[] = [
   {
     Id: 3,
     IsBatch: true,
-    Movement: 3,
-    Lot: 'lotSet',
-    LotSelection: [{ Id: 1, LotNumber: 'lot 1' }, { Id: 2, LotNumber: 'lot 2' }],
+    Movement: undefined,
+    Lot: '',
+    LotSelection: [],
     Disabled: true,
   }];
 
