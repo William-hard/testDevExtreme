@@ -11,7 +11,7 @@
       [showEditorAlways]="true"  editCellTemplate="movementsTemplate" [allowEditing]="true"></dxi-column>
 
     <div *dxTemplate="let data of 'movementsTemplate'">
-      <dx-text-box (onValueChanged)="onValueMovementChange(data, $event)" [(value)]="data.value">
+      <dx-text-box (onValueChanged)="onValueMovementChange(data, $event)" [value]="data.value">
       </dx-text-box>
     </div>
 
@@ -23,7 +23,7 @@
 
     <div *dxTemplate="let data of 'lotSelectionTemplate'">
       <dx-select-box [dataSource]="getLotsDataSource(data)" displayExpr="LotNumber" valueExpr="LotNumber"
-        [acceptCustomValue]="true" [(value)]="data.data.Lot" (onCustomItemCreating)="addCustomItem($event, data)"
+        [acceptCustomValue]="true" [value]="data.data.Lot" (onValueChanged)="LotValueChanged(data, $event)" (onCustomItemCreating)="addCustomItem($event, data)"
         placeholder="ajouter où sélectionner un lot">
       </dx-select-box>
     </div>

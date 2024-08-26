@@ -1,7 +1,7 @@
 import { Component, ViewChild, AfterViewChecked } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular/ui/data-grid';
 import notify from 'devextreme/ui/notify';
-import { EditorPreparingEvent, Row, SelectionChangedEvent } from 'devextreme/ui/data_grid';
+import { ColumnEditCellTemplateData, EditorPreparingEvent, Row, SelectionChangedEvent } from 'devextreme/ui/data_grid';
 import { CustomItemCreatingEvent, ValueChangedEvent } from 'devextreme/ui/select_box';
 import DevExpress from 'devextreme';
 import { ExecutionItem, Lot, Service } from './app.service';
@@ -86,10 +86,14 @@ export class AppComponent implements AfterViewChecked {
     const validate: boolean = e.data.Lot !== '' && e.data.Movement > 0 && e.data.IsBatch;
     return validate;
   }
-
+  LotValueChanged(data: ColumnEditCellTemplateData, e: any) {
+     data.setValue(e.value);
+  }
   onValueMovementChange(datas: any, e: any): void {
-    datas.data.movements = e.value;
-    if (datas.data.movements > 0 && datas.data.IsBatch) {
+
+    datas.data.Movement = Number(e.value || 0);
+    if (datas.data.Movement > 0 && datas.data.IsBatch) {
+      datas.row.isSelected = true;
       this.validateVisibleRows();
     }
   }
@@ -111,6 +115,7 @@ export class AppComponent implements AfterViewChecked {
   validateBatch(e: ValidationCallbackData): boolean {
     if (e.data.Movement > 0 && e.data.Lot > 0) { return true; }
     return false;
+
   }
 
   addCustomItem(data: CustomItemCreatingEvent, item: any): void {
