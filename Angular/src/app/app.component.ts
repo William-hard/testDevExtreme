@@ -70,7 +70,7 @@ export class AppComponent implements AfterViewChecked {
     if (this.changes.length && this.checked) {
       this.checked = false;
       const dataGridInstance = this?.dataGrid?.instance;
-      dataGridInstance?.repaintRows([0]);
+      dataGridInstance?.repaint();
       // @ts-expect-error - getController is a private method
       dataGridInstance?.getController('validating').validate(true).then((result: Boolean) => {
         const message = result ? 'Validation is passed' : 'Validation is failed';
@@ -80,9 +80,6 @@ export class AppComponent implements AfterViewChecked {
   }
 
   validateLots(e: any): boolean {
-    if (e.value) {
-      e.data.Lot = e.value;
-    }
     if (!e.data.IsBatch) {
       return true;
     }
@@ -93,19 +90,12 @@ export class AppComponent implements AfterViewChecked {
      data.setValue(e.value);
   }
   onValueMovementChange(datas: any, e: any): void {
+
     datas.data.Movement = Number(e.value || 0);
     if (datas.data.Movement > 0 && datas.data.IsBatch) {
       datas.row.isSelected = true;
       this.validateVisibleRows();
     }
-  }
-
-  onSelectionChanged({ selectedRowKeys }: SelectionChangedEvent): void {
-    this.selectedItemKeys = selectedRowKeys;
-  }
-
-  setLotItem(mydatas: any, e: ValueChangedEvent): void {
-    mydatas.data.Lot = e.value;
   }
 
   onEditorPreparing(e: EditorPreparingEvent<ExecutionItem>): void {
@@ -121,11 +111,13 @@ export class AppComponent implements AfterViewChecked {
       }
     }
   }
-  validateBatch(e: ValidationCallbackData){
-    if(e.data.Movement > 0 && e.data.Lot !== "") 
-       return e.value !== null;  // value should be either true or false if Movement and Lot are entered
-    else return true;
+
+  validateBatch(e: ValidationCallbackData): boolean {
+    if (e.data.Movement > 0 && e.data.Lot > 0) { return true; }
+    return false;
+
   }
+
   addCustomItem(data: CustomItemCreatingEvent, item: any): void {
     if (!data.text) {
       data.customItem = null;
@@ -144,11 +136,15 @@ export class AppComponent implements AfterViewChecked {
       };
 
       const lotSelection = this.mapLotSelectionRowId.get(item.key);
+      console.log(lotSelection?.items().length);
 
       if (lotSelection) {
         data.customItem = lotSelection.store().insert(newLotItem)
           .then(() => lotSelection.load())
-          .then(() => newLotItem)
+          .then(() => {
+            newLotItem;
+            console.log(lotSelection?.items().length);
+          })
           .catch((error) => {
             throw error;
           });
@@ -157,12 +153,16 @@ export class AppComponent implements AfterViewChecked {
   }
 
   getLotsDataSource(datas: any): DataSource {
-    const x = this.mapLotSelectionRowId.get(datas.data.Id);
+    const dataSource = this.mapLotSelectionRowId.get(datas.data.Id);
 
-    if (!x) {
+    if (!dataSource) {
       throw '';
     }
 
-    return x;
+    return dataSource;
+  }
+
+  onSelectionChanged($event: any) {
+
   }
 }
