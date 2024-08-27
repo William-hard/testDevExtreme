@@ -8,6 +8,7 @@ import { ExecutionItem, Lot, Service } from './app.service';
 import DataChange = DevExpress.common.grids.DataChange;
 import DataSource from 'devextreme/data/data_source';
 import { ValidationCallbackData } from 'devextreme/common';
+import { Data } from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -75,7 +76,7 @@ export class AppComponent implements AfterViewChecked {
     }
   }
 
-  validateLots(e: any): boolean {
+  validateLots(e: ValidationCallbackData): boolean {
     if (!e.data.IsBatch) {
       return true;
     }
@@ -98,32 +99,31 @@ export class AppComponent implements AfterViewChecked {
     }
   }
 
-  addCustomItem(data: CustomItemCreatingEvent, item: any): void {
-    if (!data.text) {
-      data.customItem = null;
+  addCustomItem(e: CustomItemCreatingEvent, data: any): void {
+    if (!e.text) {
+      e.customItem = null;
       return;
     }
-    const lotExist = item.data.LotSelection.some((lot: Lot) => lot.LotNumber === data.text);
+    const lotExist = data.data.LotSelection.some((lot: Lot) => lot.LotNumber === e.text);
 
-    const ids: number[] = item.data.LotSelection.map((lot: Lot) => lot.Id);
+    const ids: number[] = data.data.LotSelection.map((lot: Lot) => lot.Id);
     const maxId: number = Math.max(...ids);
     const newId: number = maxId + 1;
 
     if (!lotExist) {
       const newLotItem: Lot = {
         Id: newId,
-        LotNumber: data.text,
+        LotNumber: e.text,
       };
 
-      const lotSelection = this.mapLotSelectionRowId.get(item.key);
+      const lotSelection = this.mapLotSelectionRowId.get(data.key);
       console.log(lotSelection?.items().length);
 
       if (lotSelection) {
-        data.customItem = lotSelection.store().insert(newLotItem)
+        e.customItem = lotSelection.store().insert(newLotItem)
           .then(() => lotSelection.load())
           .then(() => {
             newLotItem;
-            console.log(lotSelection?.items().length);
           })
           .catch((error) => {
             throw error;
