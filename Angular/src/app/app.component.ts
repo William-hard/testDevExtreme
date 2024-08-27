@@ -1,14 +1,12 @@
 import { Component, ViewChild, AfterViewChecked } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular/ui/data-grid';
-import notify from 'devextreme/ui/notify';
-import { EditorPreparingEvent, Row, SelectionChangedEvent } from 'devextreme/ui/data_grid';
-import { CustomItemCreatingEvent, ValueChangedEvent } from 'devextreme/ui/select_box';
+import { EditorPreparingEvent, Row } from 'devextreme/ui/data_grid';
+import { CustomItemCreatingEvent } from 'devextreme/ui/select_box';
 import DevExpress from 'devextreme';
-import { ExecutionItem, Lot, Service } from './app.service';
-import DataChange = DevExpress.common.grids.DataChange;
 import DataSource from 'devextreme/data/data_source';
 import { ValidationCallbackData } from 'devextreme/common';
-import { Data } from "@angular/router";
+import { ExecutionItem, Lot, Service } from './app.service';
+import DataChange = DevExpress.common.grids.DataChange;
 
 @Component({
   selector: 'app-root',
