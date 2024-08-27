@@ -1,6 +1,6 @@
 import { Component, ViewChild, AfterViewChecked } from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular/ui/data-grid';
-import { EditorPreparingEvent, Row } from 'devextreme/ui/data_grid';
+import { EditorPreparingEvent, Row, RowValidatingEvent } from 'devextreme/ui/data_grid';
 import { CustomItemCreatingEvent } from 'devextreme/ui/select_box';
 import DevExpress from 'devextreme';
 import DataSource from 'devextreme/data/data_source';
@@ -80,6 +80,7 @@ export class AppComponent implements AfterViewChecked {
     }
     const validate: boolean = e.data.Lot !== '' && e.data.Movement > 0 && e.data.IsBatch;
     console.log('---->', validate);
+
     return validate;
   }
 
@@ -116,6 +117,12 @@ export class AppComponent implements AfterViewChecked {
           .then(() => lotSelection.load())
           .then(() => {
             newLotItem;
+
+            const dataGridInstance = this?.dataGrid?.instance;
+            // @ts-ignore
+            dataGridInstance.cellValue(data.rowIndex, 'Lot', newLotItem.LotNumber);
+
+            // comment setter lot pour cette row ??
           })
           .catch((error) => {
             throw error;
@@ -132,5 +139,19 @@ export class AppComponent implements AfterViewChecked {
     }
 
     return dataSource;
+  }
+
+  onFocusedRowChanging(e: any): void {
+    console.log(e);
+  }
+
+  onRowValidating(e: RowValidatingEvent): void {
+    console.log(e);
+    // const dii = this?.dataGrid?.instance;
+    // dii?.deselectRows($event.key);
+
+    if (e.isValid) {
+      this?.dataGrid?.instance.deselectRows(e.key).catch((e) => console.error(e));
+    }
   }
 }

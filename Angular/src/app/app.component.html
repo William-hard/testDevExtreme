@@ -1,12 +1,14 @@
 <div class="demo-container">
 
   <dx-data-grid [dataSource]="executionItems" keyExpr="Id" [repaintChangesOnly]="true" [showBorders]="true"
-     (onCellPrepared)="onEditorPreparing($event)">
+     (onCellPrepared)="onEditorPreparing($event)"
+      (onFocusedRowChanging)="onFocusedRowChanging($event)"
+    (onRowValidating)="onRowValidating($event)">
 
     <dxo-editing [(changes)]="changes" mode="cell" [allowUpdating]="true">
     </dxo-editing>
 
-
+    <dxo-selection mode="single"></dxo-selection>
     <dxi-column
       id="Movement"
       dataField="Movement"
@@ -46,7 +48,17 @@
 
       </dx-select-box>
     </div>
-
+    <dxo-toolbar>
+      <dxi-item>
+        <div *dxTemplate>
+          <dx-button
+            text="Validate DataGrid"
+            stylingMode="outlined"
+            (onClick)="validateVisibleRows()"
+          ></dx-button>
+        </div>
+      </dxi-item>
+    </dxo-toolbar>
   </dx-data-grid>
 
 
