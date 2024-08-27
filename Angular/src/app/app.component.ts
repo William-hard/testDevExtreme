@@ -88,12 +88,6 @@ export class AppComponent implements AfterViewChecked {
       if (e.dataField === 'Movement' && e.value > 0) {
         e.editorOptions.readOnly = true;
       }
-      if (e.dataField === 'Lot' && e.row !== undefined) {
-        // @ts-expect-error
-        if (e.row.data.Movement > 0) {
-          e.editorOptions.readOnly = true;
-        }
-      }
     }
   }
 
